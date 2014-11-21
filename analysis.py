@@ -3,16 +3,13 @@
 
 # <codecell>
 
-from Data import *
 import math
-import Noise_Analysis as na
 import numpy as np
 import os
 from collections import defaultdict
 import scipy.stats as stats
 import matplotlib.pyplot as plt
 import random as nd
-import statsmodels.api as sm
 %pylab inline
 %load_ext autoreload
 %autoreload 2
@@ -27,6 +24,44 @@ import statsmodels.api as sm
 
 # <codecell>
 
+class Data :
+    def __init__(self, inputfile) :
+        self.data = self.construct_array(inputfile)
+        self.num_games = self.data[-1][0]
+
+    def construct_array (self, inputfile) :
+        data = open(inputfile, 'r')
+        ndtype = [('game-number', 'int'),
+                  ('clock', 'int'),
+                  ('high-payoff-location', 'a10'),
+                  ('player', 'a5'),
+                  ('xcor', 'f8'),
+                  ('ycor', 'f8'),
+                  ('heading', 'f8'),
+                  ('points-earned', 'int'),
+                  ('noise', 'f8')]
+        strucArray = genfromtxt(data, dtype = ndtype, delimiter = ',')
+        return strucArray
+
+    def get_data (self) :
+        return self.data
+
+# <codecell>
+
+def get_blue_data (data) :
+    b = data['player'] == 'host'
+    return data[b]
+
+def get_red_data (data) :
+    b = data['player'] == 'other'
+    return data[b]
+
+def get_game_data (data, game_number) :
+    b = data['gamenumber'] == game_number
+    return data[b]
+
+# <codecell>
+
 def get_outcome_seq(conflict_level, cond) :
     max_points = 4 if conflict_level == 'high' else 2
     big_list = []
@@ -37,13 +72,13 @@ def get_outcome_seq(conflict_level, cond) :
                 destination = r + '/' + files
                 d = Data(destination).get_data()
                 num_games = d[-1][0]
-                red_data, blue_data = na.get_red_data(d), na.get_blue_data(d)
+                red_data, blue_data = get_red_data(d), get_blue_data(d)
                 red_points, blue_points = 0, 0                                                                                  
                 for i in range(1,num_games+1) :
-                    g = na.get_game_data(d,i)
-                    if na.get_red_data(g)[0][-2] == na.get_red_data(g)[-1][-2] - max_points :
+                    g = get_game_data(d,i)
+                    if get_red_data(g)[0][-2] == get_red_data(g)[-1][-2] - max_points :
                         ts.append('R')
-                    elif na.get_blue_data(g)[0][-2] == na.get_blue_data(g)[-1][-2] - max_points :
+                    elif get_blue_data(g)[0][-2] == get_blue_data(g)[-1][-2] - max_points :
                         ts.append('B')
                     else :
                         ts.append('T')
@@ -158,6 +193,8 @@ plt.xlim(0,1)
 plt.ylim(0,6)
 plt.hist(l_dyn_eff, normed=True, range=(0,1))
 plt.title("1 v. 2 dynamic")
+matplotlib.rcParams.update({'font.size': 10})
+
 plt.show()
 
 # <markdowncell>
@@ -332,18 +369,18 @@ def get_direction_seq(conflict_level, cond) :
                 destination = r + '/' + files
                 d = Data(destination).get_data()
                 num_games = d[-1][0]
-                red_data, blue_data = na.get_red_data(d), na.get_blue_data(d)
+                red_data, blue_data = get_red_data(d), get_blue_data(d)
                 for i in range(1,num_games+1) :
-                    g = na.get_game_data(d,i)
+                    g = get_game_data(d,i)
                     # If red wins... Count it if they're on top, otherwise note that blue went top
-                    if (na.get_red_data(g)[0][-2] == (na.get_red_data(g)[-1][-2] - max_points)) :
-                        if (na.get_red_data(g)[0][2]) == 'top' :
+                    if (get_red_data(g)[0][-2] == (get_red_data(g)[-1][-2] - max_points)) :
+                        if (get_red_data(g)[0][2]) == 'top' :
                             ts.append('R')
                         else :
                             ts.append('B')
                     # If blue wins... Count it if they're on top, otherwise note that red went top
-                    elif (na.get_blue_data(g)[0][-2] == (na.get_blue_data(g)[-1][-2] - max_points)) :
-                        if (na.get_blue_data(g)[0][2]) == 'top' :
+                    elif (get_blue_data(g)[0][-2] == (get_blue_data(g)[-1][-2] - max_points)) :
+                        if (get_blue_data(g)[0][2]) == 'top' :
                             ts.append('B')
                         else :
                             ts.append('R')
@@ -548,7 +585,7 @@ plt.errorbar([0,1], [np.mean(h_bal_surp), np.mean(h_dyn_surp)],
 plt.errorbar([0,1], [np.mean(l_bal_surp), np.mean(l_dyn_surp)], 
              yerr = [np.std(l_bal_surp) / math.sqrt(len(l_bal_surp)), 
                      np.std(l_dyn_surp) / math.sqrt(len(l_dyn_surp))],
-                     fmt = ':x', label = "1 v. 2")
+                     fmt = '--x', label = "1 v. 2")
 plt.xticks([0,1],['ballistic', 'dynamic'])
 plt.xlim(-0.5, 1.5)
 #plt.ylim(.1,.5)
@@ -607,9 +644,9 @@ plt.errorbar([0,1], [np.mean(h_bal_eff), np.mean(h_dyn_eff)],
 plt.errorbar([0,1], [np.mean(l_bal_eff), np.mean(l_dyn_eff)], 
              yerr = [np.std(l_bal_eff) / math.sqrt(len(l_bal_eff)), 
                      np.std(l_dyn_eff) / math.sqrt(len(l_dyn_eff))], 
-             fmt = ':x', label = "Low")
+             fmt = '--x', label = "Low", lw = 3)
 matplotlib.rcParams.update({'font.size': 20})
-plt.xticks([0,1],['ballistic', 'dynamic'])
+plt.xticks([0,1],['Ballistic', 'Dynamic'])
 plt.xlim(-0.5, 1.5)
 plt.ylim(0.6,.9)
 plt.ylabel(r"$\overline{\rho_1 + \rho_2}$")
@@ -624,8 +661,8 @@ plt.errorbar([0,1], [np.mean(h_bal_fair), np.mean(h_dyn_fair)],
 plt.errorbar([0,1], [np.mean(l_bal_fair), np.mean(l_dyn_fair)], 
              yerr = [np.std(l_bal_fair) / math.sqrt(len(l_bal_fair)), 
                      np.std(l_dyn_fair) / math.sqrt(len(l_dyn_fair))], 
-             fmt = ':x', label = "Low")
-plt.xticks([0,1],['ballistic', 'dynamic'])
+             fmt = '--x', label = "Low", lw = 3)
+plt.xticks([0,1],['Ballistic', 'Dynamic'])
 plt.xlim(-0.5, 1.5)
 plt.legend(loc='upper left')
 plt.ylabel(r"$\overline{\min(\rho_1', \rho_2') / \max(\rho_1', \rho_2')}$")
@@ -639,15 +676,16 @@ plt.errorbar([0,1], [np.mean(h_bal_surp), np.mean(h_dyn_surp)],
 plt.errorbar([0,1], [np.mean(l_bal_surp), np.mean(l_dyn_surp)], 
              yerr = [np.std(l_bal_surp) / math.sqrt(len(l_bal_surp)), 
                      np.std(l_dyn_surp) / math.sqrt(len(l_dyn_surp))],
-                     fmt = ':x', label = "Low")
-plt.xticks([0,1],['ballistic', 'dynamic'])
+                     fmt = '--x', label = "Low", lw = 3)
+plt.xticks([0,1],['Ballistic', 'Dynamic'])
 plt.xlim(-0.5, 1.5)
 #plt.legend(loc='best')
-plt.ylabel(r"surprisal (bits)")
+plt.ylabel(r"Surprisal (bits)")
 plt.title("Stability")
 matplotlib.rcParams.update({'font.size': 25})
 fig = matplotlib.pyplot.gcf()
 fig.set_size_inches(32,7)
+fig.savefig('fig2.pdf')
 
 # <headingcell level=3>
 
@@ -668,23 +706,16 @@ l_dyn_ranks = (r[tick3 :])
 plt.errorbar([0,1], [np.mean(h_bal_ranks), np.mean(h_dyn_ranks)], 
              yerr = [np.std(h_bal_ranks) / math.sqrt(len(h_bal_ranks)), 
                      np.std(h_dyn_ranks) / math.sqrt(len(h_dyn_ranks))], 
-             fmt='-o',  label = "high")
+             fmt='-o',  label = "High")
 plt.errorbar([0,1], [np.mean(l_bal_ranks), np.mean(l_dyn_ranks)], 
              yerr = [np.std(l_bal_ranks) / math.sqrt(len(l_bal_ranks)), 
                      np.std(l_dyn_ranks) / math.sqrt(len(l_dyn_ranks))], 
-             fmt = ':x', label = "low")
-plt.xticks([0,1],['ballistic', 'dynamic'])
+             fmt = '--x', label = "Low", lw = 3)
+plt.xticks([0,1],['Ballistic', 'Dynamic'])
 plt.xlim(-0.5, 1.5)
 #plt.ylim(0.6,.9)
 plt.title("Efficiency")
-plt.ylabel("efficiency (mean rank)")
-
-print np.mean(l_bal_ranks), np.mean(l_dyn_ranks), np.mean(h_bal_ranks), np.mean(h_dyn_ranks)
-print "kruscal-wallis significant w/ p =", stats.kruskal(h_dyn_eff,l_dyn_eff,h_bal_eff,l_bal_eff)
-print "mann-whitney shows significant diff b/w h_bal and h_dyn w/ p =", stats.mannwhitneyu(h_bal_eff, h_dyn_eff), len(h_bal_eff), len(h_dyn_eff)
-print "mann-whitney shows significant diff b/w l_bal and l_dyn w/ p =", stats.mannwhitneyu(l_bal_eff, l_dyn_eff), len(l_bal_eff), len(l_dyn_eff)
-print "mann-whitney shows significant diff b/w l_bal and h_bal w/ p =", stats.mannwhitneyu(l_bal_eff, h_bal_eff)
-print "mann-whitney shows significant diff b/w l_dyn and h_dyn w/ p =", stats.mannwhitneyu(l_dyn_eff, h_dyn_eff)
+plt.ylabel("Efficiency (Mean Rank)")
 
 plt.subplot(132)
 r = stats.rankdata(h_bal_fair + h_dyn_fair + l_bal_fair + l_dyn_fair)
@@ -698,16 +729,16 @@ l_dyn_ranks = (r[tick3 :])
 plt.errorbar([0,1], [np.mean(h_bal_ranks), np.mean(h_dyn_ranks)], 
              yerr = [np.std(h_bal_ranks) / math.sqrt(len(h_bal_ranks)),
                      np.std(h_dyn_ranks) / math.sqrt(len(h_dyn_ranks))],
-             fmt = '-o', label = "high")
+             fmt = '-o', label = "High")
 plt.errorbar([0,1], [np.mean(l_bal_ranks), np.mean(l_dyn_ranks)], 
              yerr = [np.std(l_bal_ranks) / math.sqrt(len(l_bal_ranks)),
                      np.std(l_dyn_ranks) / math.sqrt(len(l_dyn_ranks))],
-             fmt = ':x', label = "low")
-plt.xticks([0,1],['ballistic', 'dynamic'])
+             fmt = '--x', label = "Low", lw = 3)
+plt.xticks([0,1],['Ballistic', 'Dynamic'])
 plt.xlim(-0.5, 1.5)
 plt.legend(loc='best')
 plt.title("Fairness")
-plt.ylabel("fairness (mean rank)")
+plt.ylabel("Fairness (Mean Rank)")
 
 
 plt.subplot(133)
@@ -722,19 +753,20 @@ l_dyn_ranks = (r[tick3 :])
 plt.errorbar([0,1], [np.mean(h_bal_ranks), np.mean(h_dyn_ranks)], 
              yerr = [np.std(h_bal_ranks) / math.sqrt(len(h_bal_ranks)),
                      np.std(h_dyn_ranks) / math.sqrt(len(h_dyn_ranks))],
-             fmt = '-o', label = "high")
+             fmt = '-o', label = "High")
 plt.errorbar([0,1], [np.mean(l_bal_ranks), np.mean(l_dyn_ranks)], 
              yerr = [np.std(l_bal_ranks) / math.sqrt(len(l_bal_ranks)),
                      np.std(l_dyn_ranks) / math.sqrt(len(l_dyn_ranks))],
-             fmt = ':x', label = "low")
-plt.xticks([0,1],['ballistic', 'dynamic'])
+             fmt = '--x', label = "Low", lw = 3)
+plt.xticks([0,1],['Ballistic', 'Dynamic'])
 plt.xlim(-0.5, 1.5)
 plt.title("Stability")
-plt.ylabel("surprisal (mean rank)")
+plt.ylabel("Surprisal (Mean Rank)")
 
 matplotlib.rcParams.update({'font.size': 25})
 fig = matplotlib.pyplot.gcf()
 fig.set_size_inches(32,7)
+fig.savefig("mean_rank_interaction.pdf")
 
 # <headingcell level=3>
 
@@ -760,16 +792,16 @@ l_dyn_ranks = (r[tick3 :])
 plt.errorbar([0,1], [np.mean(h_bal_ranks), np.mean(h_dyn_ranks)], 
              yerr = [np.std(h_bal_ranks) / math.sqrt(len(h_bal_ranks)),
                      np.std(h_dyn_ranks) / math.sqrt(len(h_dyn_ranks))],
-             fmt = '-o', label = "high")
+             fmt = '-o', label = "High")
 plt.errorbar([0,1], [np.mean(l_bal_ranks), np.mean(l_dyn_ranks)], 
              yerr = [np.std(l_bal_ranks) / math.sqrt(len(l_bal_ranks)),
                      np.std(l_dyn_ranks) / math.sqrt(len(l_dyn_ranks))],
-             fmt = ':x', label = "low")
-plt.xticks([0,1],['ballistic', 'dynamic'])
+             fmt = '--x', label = "Low", lw=3)
+plt.xticks([0,1],['Ballistic', 'Dynamic'])
 plt.xlim(-0.5, 1.5)
 plt.ylim(5000, 6100)
 plt.title("$m = 3$")
-plt.ylabel("surprisal (mean rank)")
+plt.ylabel("Surprisal (Mean Rank)")
 
 num_back = 4
 l_dyn_surp = [image for mi in get_big_surp(l_dyn, l_dyn_dir, num_back)[0] for image in mi]
@@ -790,16 +822,17 @@ l_dyn_ranks = (r[tick3 :])
 plt.errorbar([0,1], [np.mean(h_bal_ranks), np.mean(h_dyn_ranks)], 
              yerr = [np.std(h_bal_ranks) / math.sqrt(len(h_bal_ranks)),
                      np.std(h_dyn_ranks) / math.sqrt(len(h_dyn_ranks))],
-             fmt = '-o', label = "high")
+             fmt = '-o', label = "High")
 plt.errorbar([0,1], [np.mean(l_bal_ranks), np.mean(l_dyn_ranks)], 
              yerr = [np.std(l_bal_ranks) / math.sqrt(len(l_bal_ranks)),
                      np.std(l_dyn_ranks) / math.sqrt(len(l_dyn_ranks))],
-             fmt = ':x', label = "low")
-plt.xticks([0,1],['ballistic', 'dynamic'])
+             fmt = '--x', label = "Low", lw=3)
+plt.legend(loc='best')
+plt.xticks([0,1],['Ballistic', 'Dynamic'])
 plt.xlim(-0.5, 1.5)
 plt.ylim(5000, 6100)
 plt.title("$m = 4$")
-plt.ylabel("surprisal (mean rank)")
+plt.ylabel("Surprisal (Mean Rank)")
 
 num_back = 5
 l_dyn_surp = [image for mi in get_big_surp(l_dyn, l_dyn_dir, num_back)[0] for image in mi]
@@ -820,20 +853,21 @@ l_dyn_ranks = (r[tick3 :])
 plt.errorbar([0,1], [np.mean(h_bal_ranks), np.mean(h_dyn_ranks)], 
              yerr = [np.std(h_bal_ranks) / math.sqrt(len(h_bal_ranks)),
                      np.std(h_dyn_ranks) / math.sqrt(len(h_dyn_ranks))],
-             fmt = '-o', label = "high")
+             fmt = '-o', label = "High")
 plt.errorbar([0,1], [np.mean(l_bal_ranks), np.mean(l_dyn_ranks)], 
              yerr = [np.std(l_bal_ranks) / math.sqrt(len(l_bal_ranks)),
                      np.std(l_dyn_ranks) / math.sqrt(len(l_dyn_ranks))],
-             fmt = ':x', label = "low")
-plt.xticks([0,1],['ballistic', 'dynamic'])
+             fmt = '--x', label = "Low", lw =3)
+plt.xticks([0,1],['Ballistic', 'Dynamic'])
 plt.xlim(-0.5, 1.5)
 plt.ylim(5000, 6100)
 plt.title("$m = 5$")
-plt.ylabel("surprisal (mean rank)")
+plt.ylabel("Surprisal (Mean Rank)")
 
 matplotlib.rcParams.update({'font.size': 25})
 fig = matplotlib.pyplot.gcf()
 fig.set_size_inches(32,7)
+plt.savefig("m_robustness.pdf")
 
 # <headingcell level=3>
 
@@ -859,6 +893,7 @@ def plot_sequence (seq, title = "") :
 
 # <codecell>
 
+matplotlib.rcParams.update({'font.size': 10})
 dir_seq32 = get_direction_seq("high", "dynamic")[32]
 out_seq32 = get_outcome_seq("high", "dynamic")[32]
 dir_seq43 = get_direction_seq("high", "dynamic")[43]
@@ -870,14 +905,33 @@ plot_sequence(out_seq43, title = "game b2a9e outcomes")
 
 # <codecell>
 
-num_back = 3
+num_back = 2
+matplotlib.rcParams.update({'font.size': 10})
 print np.mean(get_surprise_ts(out_seq43, num_back=num_back)), np.mean(get_surprise_ts(dir_seq43, num_back=num_back))
 plot(get_surprise_ts(out_seq32, num_back=num_back))
-plot(get_surprise_ts(out_seq43, num_back=num_back))
+plt.ylabel("Surprisal (bits)")
+plt.ylim(0,3.5)
+plt.xlabel("Game Number")
 plt.show()
+
 plt.clf()
-plt.hist(get_surprise_ts(out_seq32), range = (0, 3), histtype = 'step')
-plt.hist(get_surprise_ts(out_seq43), range = (0, 3), histtype = 'step')
+plot(get_surprise_ts(out_seq43, num_back=num_back))
+plt.ylim(0,3.5)
+plt.xlabel("Game Number")
+plt.show()
+
+plt.clf()
+plt.hist(get_surprise_ts(out_seq32), bins = 20, range = (0, 4))
+plt.xlabel("Surprisal (bits)")
+plt.ylabel("Frequency")
+plt.ylim(0,40)
+plt.show()
+
+plt.clf()
+plt.hist(get_surprise_ts(out_seq43), bins = 20, range = (0, 4))
+plt.xlabel("Surprisal (bits)")
+plt.ylim(0,40)
+plt.show()
 #h_dyn[32]
 #h_dyn[43]
 
@@ -887,17 +941,28 @@ plt.hist(get_surprise_ts(out_seq43), range = (0, 3), histtype = 'step')
 
 # <codecell>
 
-plt.hist(l_dyn_surp, range = (0, 4), bins = 20, cumulative = True, normed = True, histtype = 'step', label = 'low + dynamic', linestyle = 'dashed')
-plt.hist(l_bal_surp, range = (0, 4), bins = 20,cumulative = True, normed = True, histtype = 'step', label = 'low + ballistic')
-plt.hist(h_bal_surp, range = (0, 4), bins = 20,cumulative = True, normed = True, histtype = 'step', label = 'high + ballistic')
-plt.hist(h_dyn_surp, range = (0, 4), bins = 20,cumulative = True, normed = True, histtype = 'step', label = 'high + dynamic', color = 'black', ls = 'dotted')
+num_back = 2
+l_dyn_surp = [image for mi in get_big_surp(l_dyn, l_dyn_dir, num_back)[0] 
+              for image in mi]
+l_bal_surp = [image for mi in get_big_surp(l_bal, l_bal_dir, num_back)[0] 
+              for image in mi]
+h_dyn_surp = [image for mi in get_big_surp(h_dyn, h_dyn_dir, num_back)[0] 
+              for image in mi]
+h_bal_surp = [image for mi in get_big_surp(h_bal, h_bal_dir, num_back)[0] 
+              for image in mi]
+plt.hist(l_dyn_surp, range = (0, 4), bins = 20,cumulative = True, normed = True, histtype = 'step', label = 'Low + Dynamic', linestyle = 'dashed')
+plt.hist(l_bal_surp, range = (0, 4), bins = 20,cumulative = True, normed = True, histtype = 'step', label = 'Low + Ballistic')
+plt.hist(h_bal_surp, range = (0, 4), bins = 20,cumulative = True, normed = True, histtype = 'step', label = 'High + Ballistic')
+plt.hist(h_dyn_surp, range = (0, 4), bins = 20,cumulative = True, normed = True, histtype = 'step', label = 'High + Dynamic', color = 'black', ls = 'dotted')
 
 plt.legend(loc='lower right')
-plt.xlabel("surprisal (bits)")
-plt.ylabel("P(surprisal)")
-plt.ylim(0,1)
+plt.xlabel("Surprisal (bits)")
+plt.ylabel("P(Surprisal)")
+plt.ylimm(0,1)
 
-plt.show()
+fig = matplotlib.pyplot.gcf()
+fig.set_size_inches(9,6)
+plt.savefig("stability_cdfs.pdf")
 
 # <headingcell level=1>
 
@@ -922,8 +987,8 @@ def going_toward_top (a) :
 # <codecell>
 
 def peeloff_helper (d, i) :
-    g = na.get_game_data(d,i)
-    red_data, blue_data = na.get_red_data(g), na.get_blue_data(g)
+    g = get_game_data(d,i)
+    red_data, blue_data = get_red_data(g), get_blue_data(g)
     blue_change = blue_data[-1][-2] - blue_data[0][-2]
     red_change = red_data[-1][-2] - red_data[0][-2]
     if blue_change >= 2 :
@@ -1012,6 +1077,7 @@ print np.mean(r[:len(cleaned_l_pot)]), np.mean(r[len(cleaned_l_pot):])
 # <codecell>
 
 import scipy.interpolate as interp
+import statsmodels.api as sm
 def get_lowess_ts (outcomes, frac) :
     lowess = sm.nonparametric.lowess
     x = range(len(outcomes[0]))
@@ -1070,14 +1136,16 @@ frac = 1./3
 z1 = get_lowess_ts(l_pot, frac)
 z2 = get_lowess_ts(h_pot, frac)
 
-fig = plt.figure()
+matplotlib.rcParams.update({'font.size': 22})
+
+fig = matplotlib.pyplot.gcf()
 
 ax1 = fig.add_subplot(111)
 ax1.set_xlabel("Round # (Low)")
 ax1.plot(l_lower, 'k-', lw = 1)
 ax1.plot(l_upper, 'k-', lw = 1)
 low_line, = ax1.plot(z1,'k-', lw = 3, label = 'low')
-plt.ylabel("peel off time")
+plt.ylabel("Peel-Off Time")
 ax1.vlines(9, .15,.55)
 ax1.vlines(15, .15, .55)
 
@@ -1089,6 +1157,7 @@ ax2.plot(h_upper, 'b:')
 plt.yticks(np.linspace(.15,.55,num = 9), ["15%", "20%", "25%", "30%", "35%", "40%", "45%", "50%", "55%"])
 plt.ylim(.15,.55)
 fig.legend((high_line, low_line), ("High", "Low"), loc = (.5,.55) )
+fig.savefig("bootstrapped_pots.pdf", bbox_inches='tight')
 
 # <markdowncell>
 
@@ -1116,12 +1185,12 @@ plt.errorbar([0,1], [np.mean(h_pot_beg), np.mean(h_pot_end)],
 plt.errorbar([0,1], [np.mean(l_pot_beg), np.mean(l_pot_end)], 
              yerr = [np.std(l_pot_beg) / math.sqrt(len(l_pot_beg)),
                      np.std(l_pot_end) / math.sqrt(len(l_pot_end))],
-             fmt = 'k:', label = "Low")
-plt.xticks([0,1],['beginning', 'end'])
+             fmt = 'k--', label = "Low", lw = 3)
+plt.xticks([0,1],['Beginning', 'End'])
 plt.xlim(-0.5, 1.5)
 #plt.title("(b)")
 plt.legend(loc='best')
-plt.ylabel("peel off time")
+plt.ylabel("Peel-Off Time")
 plt.ylim(.15,.5)
 plt.yticks([.15,.20,.25,.30,.35,.40,.45,.50],["15%", "20%", "25%", "30%", "35%", "40%", "45%", "50%"])
 print "Kruskal Wallis significant w/ p =", stats.mstats.kruskalwallis(l_pot_beg,l_pot_end,h_pot_beg, h_pot_end)
@@ -1133,6 +1202,7 @@ print "Mann-whitney @ High", stats.mannwhitneyu(h_pot_beg, h_pot_end)
 print "Mann-whitney @ Low", stats.mannwhitneyu(l_pot_beg, l_pot_end)
 matplotlib.rcParams.update({'font.size': 22})
 fig = matplotlib.pyplot.gcf()
+fig.savefig("beginning_end_interaction.pdf")
 #fig.set_size_inches(32,7)
 
 # <headingcell level=3>
