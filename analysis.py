@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[124]:
+# In[1]:
 
 import math
 import numpy as np
@@ -17,7 +17,7 @@ get_ipython().magic(u'autoreload 2')
 
 # # Setup & helper functions
 
-# In[146]:
+# In[2]:
 
 class Data :
     def __init__(self, inputfile) :
@@ -42,7 +42,7 @@ class Data :
         return self.data
 
 
-# In[147]:
+# In[3]:
 
 def get_blue_data (data) :
     b = data['player'] == 'host'
@@ -57,7 +57,7 @@ def get_game_data (data, game_number) :
     return data[b]
 
 
-# In[148]:
+# In[91]:
 
 def get_outcome_seq(conflict_level, cond) :
     max_points = 4 if conflict_level == 'high' else 2
@@ -85,7 +85,7 @@ def get_outcome_seq(conflict_level, cond) :
 
 # Given the outcome sequence for a given condition, we can compute the efficiency and fairness for each game
 
-# In[149]:
+# In[92]:
 
 def get_efficiency_fairness(outcome_seq) :
     efficiency, fairness = [], []
@@ -119,7 +119,7 @@ def get_efficiency_fairness(outcome_seq) :
 
 # # Import data
 
-# In[129]:
+# In[93]:
 
 h_dyn = get_outcome_seq("high", "dynamic")
 h_bal = get_outcome_seq("high", "ballistic")
@@ -130,7 +130,7 @@ l_bal = get_outcome_seq("low", "ballistic")
 # Check how many dyads we have for each condition
 # 
 
-# In[130]:
+# In[94]:
 
 print "1 vs. 4 dynamic:\t", len(h_dyn)
 print "1 vs. 4 ballistic:\t", len(h_bal)
@@ -140,7 +140,7 @@ print "1 vs. 2 ballistic:\t", len(l_bal)
 
 # Compute efficiency and fairness
 
-# In[131]:
+# In[95]:
 
 h_bal_eff, h_bal_fair = get_efficiency_fairness(h_bal)
 h_dyn_eff, h_dyn_fair = get_efficiency_fairness(h_dyn)
@@ -154,9 +154,9 @@ l_dyn_eff, l_dyn_fair = get_efficiency_fairness(l_dyn)
 
 # ### S2 Fig (a) & (b)
 
-# In[150]:
+# In[96]:
 
-plt.suptitle("Efficiency histograms", y = 1.1, fontsize = 14)
+matplotlib.rcParams.update({'font.size': 10})
 
 plt.subplot(221)
 plt.hist(h_bal_eff, normed=True, range=(0,1))
@@ -186,18 +186,20 @@ plt.xlim(0,1)
 plt.ylim(0,6)
 plt.hist(l_dyn_eff, normed=True, range=(0,1))
 plt.title("1 v. 2 dynamic")
-matplotlib.rcParams.update({'font.size': 10})
+plt.suptitle("a. Efficiency distribution", y = 1.1, fontsize = 14)
 
-plt.savefig("figures/S2_Fig(a).pdf")
+fig = matplotlib.pyplot.gcf()
+fig.set_size_inches(8,5)
+plt.savefig("figures/S2_Fig(a).tiff", bbox_inches='tight' );
 
 
-# In[151]:
+# In[97]:
 
-plt.suptitle("Fairness histograms", y = 1.1, fontsize = 14)
+plt.suptitle("b. Fairness distribution", y = 1.1, fontsize = 14)
 
 plt.subplot(221)
 plt.xlim(0,1)
-plt.ylim(0,4.5)
+plt.ylim(0,5)
 plt.hist(h_bal_fair, normed=True, range=(0,1))
 plt.title("1 v. 4 ballistic")
 ax = plt.gca()
@@ -205,7 +207,7 @@ plt.setp( ax.get_xticklabels(),  visible=False)
 
 plt.subplot(222)
 plt.xlim(0,1)
-plt.ylim(0,4.5)
+plt.ylim(0,5)
 plt.hist(h_dyn_fair, normed=True, range=(0,1))
 plt.title("1 v. 4 dynamic")
 ax = plt.gca()
@@ -213,24 +215,26 @@ plt.setp( ax.get_xticklabels(),  visible=False)
 
 plt.subplot(223)
 plt.xlim(0,1)
-plt.ylim(0,4.5)
+plt.ylim(0,5)
 plt.hist(l_bal_fair, normed=True, range=(0,1))
 plt.title("1 v. 2 ballistic")
 
 plt.subplot(224)
 plt.xlim(0,1)
-plt.ylim(0,4.5)
+plt.ylim(0,5)
 plt.hist(l_dyn_fair, normed=True, range=(0,1))
 plt.title("1 v. 2 dynamic")
 
-plt.savefig("figures/S2_Fig(b).pdf")
+fig = matplotlib.pyplot.gcf()
+fig.set_size_inches(8,5)
+plt.savefig("figures/S2_Fig(b).tiff", bbox_inches='tight')
 
 
 # Note that the distribution of fairness scores is bimodal.
 # 
 # Next, we make an interaction plot comparing mean efficiency across the four conditions, and conduct a set of non-parametric statistical tests.
 
-# In[152]:
+# In[98]:
 
 plt.errorbar([0,1], [np.mean(h_bal_eff), np.mean(h_dyn_eff)], 
              yerr = [np.std(h_bal_eff) / math.sqrt(len(h_bal_eff)), 
@@ -257,7 +261,7 @@ print "mann-whitney b/w l_dyn and h_dyn w/ (U, p) =", stats.mannwhitneyu(l_dyn_e
 # We find a main effect of the "ballistic-dynamic" manipulation but no effect of the payoff manipulation.
 # Since the kruskal-wallis and mann-whitney tests compare ranks, not means, the previous plot is technically misleading. We need to report mean rank, which shows the same effect but has a less interpretable y-axis.
 
-# In[153]:
+# In[99]:
 
 r = stats.rankdata(h_bal_eff + h_dyn_eff + l_bal_eff + l_dyn_eff)
 tick1 = len(h_bal_eff)
@@ -284,7 +288,7 @@ plt.ylabel("efficiency (mean rank)")
 
 # Plot means for visualization, and compare using kruskal-wallis and post-hoc mann-whitney tests
 
-# In[154]:
+# In[100]:
 
 plt.errorbar([0,1], [np.mean(h_bal_fair), np.mean(h_dyn_fair)], 
              yerr = [np.std(h_bal_fair) / math.sqrt(len(h_bal_fair)), 
@@ -310,7 +314,7 @@ print "mann-whitney: l_bal vs. h_bal w/ (U, p) =", stats.mannwhitneyu(h_bal_fair
 
 # Again, we technically want to look at mean rank rather than the raw means of fairness scores, but we find the same results:
 
-# In[155]:
+# In[101]:
 
 r = stats.rankdata(h_bal_fair + h_dyn_fair + l_bal_fair + l_dyn_fair)
 tick1 = len(h_bal_fair)
@@ -338,7 +342,7 @@ plt.ylabel("fairness (mean rank)")
 
 # Especially in ballistic conditions, people use the random assignment of the payoffs to coordinate. One player will always go top and the other will always go bottom. The stability of this pattern isn't captured by the outcomes, so we need to check the direction sequence as well.
 
-# In[156]:
+# In[102]:
 
 def get_direction_seq(conflict_level, cond) :
     big_list = []
@@ -371,7 +375,7 @@ def get_direction_seq(conflict_level, cond) :
     return big_list
 
 
-# In[157]:
+# In[103]:
 
 h_bal_dir = get_direction_seq("high", "ballistic")
 h_dyn_dir = get_direction_seq("high", "dynamic")
@@ -381,7 +385,7 @@ l_dyn_dir = get_direction_seq("low", "dynamic")
 
 # ```get_surprise_ts``` first builds up a conditional probability distribution giving the likelihood of observing one outcome given the previous m outcomes. Once we have this distribution, it computes Shannon's surprisal for each round of the game:
 
-# In[158]:
+# In[104]:
 
 def get_surprise_ts (ts, num_back = 2) :
     d = defaultdict(lambda: defaultdict(int))
@@ -401,7 +405,7 @@ def get_surprise_ts (ts, num_back = 2) :
 
 # ```get_big_surp``` is a wrapper function for get_surprise_ts. It builds surprisal time series for both the outcome encoding and the direction encoding, then appends the one that is lower overall to the big list of surprisal time series for all dyads in a given condition.
 
-# In[159]:
+# In[105]:
 
 def get_big_surp (outcome_seqs, direction_seqs, num_back = 2) :
     big_surp = []
@@ -420,7 +424,7 @@ def get_big_surp (outcome_seqs, direction_seqs, num_back = 2) :
 
 # We calculate the big list of surprisals for each condition:
 
-# In[160]:
+# In[106]:
 
 ### Later on, we show that other values of num_back look the same
 num_back = 2
@@ -439,7 +443,7 @@ h_bal_surp = [image for mi in get_big_surp(h_bal, h_bal_dir, num_back)[0]
 # One minor question of interest concerns which conditions used the 'direction' encoding and which conditions used the 'outcome' coding. In other words, which conditions generally adopted which convention.
 # We test this using a chi-squared contingency test on the counts of how many dyads in each condition adopted each convention.
 
-# In[161]:
+# In[107]:
 
 n = len(l_dyn)
 l_dyn_freq = get_big_surp(l_dyn, l_dyn_dir)[1]
@@ -466,6 +470,7 @@ res = stats.chi2_contingency([[l_dyn_entry,
                                l_bal_entry],# High Dynamic is more likely to be outcome based than expected
                               [h_dyn_entry, 
                                h_bal_entry]])
+print res
 print "chi^2 =", res[0], "-> p = ", res[1]
 print()
 expected = res[-1]# High Ballistic is more likely to be outcome based than expected
@@ -484,7 +489,7 @@ print "key:\n", np.array([[["1v2 dyn dir", "1v2 dyn out"],
 
 # We can visualize this effect
 
-# In[162]:
+# In[108]:
 
 n = len(l_dyn)
 l_dyn_p = get_big_surp(l_dyn, l_dyn_dir)[1] / float(n)
@@ -513,12 +518,14 @@ plt.ylabel("p(direction encoding most stable)")
 
 # ### S2 Fig(c)
 
-# In[163]:
+# In[109]:
 
 highest_x = 1
-highest_y = 5
+highest_y = 6
 
-plt.suptitle("Stability histograms", y = 1.1, fontsize = 14)
+matplotlib.rcParams.update({'font.size': 10})
+
+plt.suptitle("c. Stability distribution", y = 1.1, fontsize = 14)
 
 plt.subplot(221)
 plt.xlim(0,highest_x)
@@ -548,14 +555,15 @@ plt.ylim(0,highest_y)
 plt.hist(l_dyn_surp, normed=True,bins = 20,range = (0, highest_x))
 plt.title("1 v. 2 dynamic")
 
-matplotlib.rcParams.update({'font.size': 10})
+fig = matplotlib.pyplot.gcf()
+fig.set_size_inches(8,5)
 
-plt.savefig("figures/S2_Fig(c).pdf")
+plt.savefig("figures/S2_Fig(c).tiff", bbox_inches='tight')
 
 
 # Now we construct the interaction plot for stability and conduct our kruskal-wallis and mann-whitney tests
 
-# In[164]:
+# In[110]:
 
 plt.errorbar([0,1], [np.mean(h_bal_surp), np.mean(h_dyn_surp)], 
              yerr = [np.std(h_bal_surp) / math.sqrt(len(h_bal_surp)), 
@@ -584,7 +592,7 @@ print "1 v. 4 ballistic & 1 v. 2 ballistic: mann-whitney (U, p) =", stats.mannwh
 # 
 # The same interaction is depicted when using mean rank:
 
-# In[165]:
+# In[111]:
 
 r = stats.rankdata(h_bal_surp + h_dyn_surp + l_bal_surp + l_dyn_surp)
 tick1 = len(h_bal_surp)
@@ -611,7 +619,7 @@ plt.ylabel("stability (mean rank)")
 
 # ## Fig. 2
 
-# In[166]:
+# In[112]:
 
 plt.subplot(131)
 plt.errorbar([0,1], [np.mean(h_bal_eff), np.mean(h_dyn_eff)], 
@@ -622,7 +630,6 @@ plt.errorbar([0,1], [np.mean(l_bal_eff), np.mean(l_dyn_eff)],
              yerr = [np.std(l_bal_eff) / math.sqrt(len(l_bal_eff)), 
                      np.std(l_dyn_eff) / math.sqrt(len(l_dyn_eff))], 
              fmt = ':x', label = "Low")
-matplotlib.rcParams.update({'font.size': 20})
 plt.xticks([0,1],['ballistic', 'dynamic'])
 plt.xlim(-0.5, 1.5)
 plt.ylim(0.6,.9)
@@ -662,12 +669,12 @@ plt.title("Stability")
 matplotlib.rcParams.update({'font.size': 25})
 fig = matplotlib.pyplot.gcf()
 fig.set_size_inches(32,7)
-plt.savefig("figures/Fig2.pdf")
+plt.savefig("figures/Fig2.tiff")
 
 
 # ## S3 Fig (mean rank)
 
-# In[167]:
+# In[113]:
 
 plt.subplot(131)
 
@@ -749,12 +756,12 @@ plt.ylabel("surprisal (mean rank)")
 matplotlib.rcParams.update({'font.size': 25})
 fig = matplotlib.pyplot.gcf()
 fig.set_size_inches(32,7)
-plt.savefig("figures/S3_Fig.pdf")
+plt.savefig("figures/S3_Fig.tiff")
 
 
 # ## S4 Fig (surprisal CDFs)
 
-# In[168]:
+# In[114]:
 
 plt.hist(l_dyn_surp, range = (0, 4), bins = 20, cumulative = True, normed = True, histtype = 'step', label = 'low + dynamic', linestyle = 'dashed')
 plt.hist(l_bal_surp, range = (0, 4), bins = 20,cumulative = True, normed = True, histtype = 'step', label = 'low + ballistic')
@@ -767,12 +774,12 @@ plt.xlabel("surprisal (bits)")
 plt.ylabel("P(surprisal)")
 plt.ylim(0,1)
 
-plt.savefig("figures/S4_Fig.pdf")
+plt.savefig("figures/S4_Fig.tiff")
 
 
 # ## S5 Fig
 
-# In[169]:
+# In[115]:
 
 def plot_sequence (seq, title = "") :
     new_l1 = [t for t in seq]
@@ -788,8 +795,8 @@ def plot_sequence (seq, title = "") :
     plt.xlabel("Game Number")
     frame1 = plt.gca()
     frame1.axes.get_yaxis().set_visible(False)
-    matplotlib.rcParams.update({'font.size': 10})
-  
+    matplotlib.rcParams.update({'font.size': 12})
+
 fig = matplotlib.pyplot.gcf()
 fig.set_size_inches(16, 16)
 
@@ -805,6 +812,7 @@ plot_sequence(out_seq43, title = "game b2a9e outcomes")
 
 num_back = 2
 
+matplotlib.rcParams.update({'font.size': 12})
 plt.subplot(323)
 plot(get_surprise_ts(out_seq32))
 plt.ylim([0, 3.5])
@@ -830,12 +838,12 @@ plt.ylim([0,4])
 plt.xlabel("Surprisal (bits)")
 
 subplots_adjust(wspace=0.1, hspace=0.25)
-plt.savefig("figures/S5_Fig.pdf")
+plt.savefig("figures/S5_Fig.tiff")
 
 
 # ## S6 Fig (different look-back values)
 
-# In[170]:
+# In[116]:
 
 num_back = 3
 alt_l_dyn_surp = [image for mi in get_big_surp(l_dyn, l_dyn_dir, num_back)[0] for image in mi]
@@ -929,7 +937,7 @@ plt.ylabel("surprisal (mean rank)")
 matplotlib.rcParams.update({'font.size': 25})
 fig = matplotlib.pyplot.gcf()
 fig.set_size_inches(32,7)
-plt.savefig("figures/S6_Fig.pdf")
+plt.savefig("figures/S6_Fig.tiff")
 
 
 # # Peeloff Time Analysis 
@@ -937,7 +945,7 @@ plt.savefig("figures/S6_Fig.pdf")
 # First, we classify participants' heading at each point in time as going toward the top or going toward the bottom.
 # 
 
-# In[171]:
+# In[117]:
 
 import numpy.ma as ma
 def going_toward_bottom (a) :
@@ -949,7 +957,7 @@ def going_toward_top (a) :
 # We then track the point at which the lower switches from pursuing the high payoff target to pursuing the low payoff target
 # 
 
-# In[172]:
+# In[118]:
 
 def peeloff_helper (d, i) :
     g = get_game_data(d,i)
@@ -984,7 +992,7 @@ def peeloff_helper (d, i) :
 
 # This is a wrapper function for the helper above, which performs this analysis for every game in the given condition.
 
-# In[173]:
+# In[119]:
 
 def get_peeloff_times(conflict_level) :
     peeloff_times = np.array([])
@@ -1005,7 +1013,7 @@ def get_peeloff_times(conflict_level) :
 # Compute the peeloff times (pot)
 # 
 
-# In[174]:
+# In[120]:
 
 # testing peeloff function
 h_pot = get_peeloff_times('high')
@@ -1015,7 +1023,7 @@ l_pot = get_peeloff_times('low')
 # Use this function to get the predicted values according to a lowess regression
 # 
 
-# In[175]:
+# In[121]:
 
 import scipy.interpolate as interp
 import statsmodels.api as sm
@@ -1030,7 +1038,7 @@ def get_lowess_ts (outcomes, frac) :
 # Use to bootstrap lowess regressions
 # 
 
-# In[176]:
+# In[122]:
 
 choice = random.choice
 def bootstrap_lowess (outcomes) :
@@ -1058,7 +1066,7 @@ def get_bounds (outcomes) :
 # Precompute +1SD and -1SD envelopes (gives an interval of what we COULD have observed if we'd constructed our local regression from a slightly different sample)
 # 
 
-# In[177]:
+# In[123]:
 
 l_lower, l_upper = get_bounds(l_pot) 
 h_lower, h_upper = get_bounds(h_pot) 
@@ -1069,7 +1077,7 @@ h_lower, h_upper = get_bounds(h_pot)
 
 # ## Fig 3(a)
 
-# In[178]:
+# In[124]:
 
 frac = 1./3
 z1 = get_lowess_ts(l_pot, frac)
@@ -1094,14 +1102,17 @@ ax2.plot(h_upper, 'b:')
 plt.yticks(np.linspace(.15,.55,num = 9), ["15%", "20%", "25%", "30%", "35%", "40%", "45%", "50%", "55%"])
 plt.ylim(.15,.55)
 fig.legend((high_line, low_line), ("High", "Low"), loc = (.5,.55) )
-plt.savefig("figures/Fig3(a).pdf")
+fig.set_size_inches(10,7)
+matplotlib.rcParams.update({'font.size': 22})
+
+plt.savefig("figures/Fig3(a).tiff", bbox_inches='tight' )
 
 
 # Note that conflict (measured by peel-off time) is greater in the 'high' condition than the 'low' condition in the initial window, but this relationship flips in the later window. We now test this observation directly on the data:
 
 # ## Fig 3(b)
 
-# In[179]:
+# In[125]:
 
 # Gotta filter out nans
 l_pot_beg = np.array([item for sublist in [t[:9] for t in l_pot] for item in sublist])
@@ -1140,13 +1151,15 @@ print "Mann-whitney @ High", stats.mannwhitneyu(h_pot_beg, h_pot_end)
 print "Mann-whitney @ Low", stats.mannwhitneyu(l_pot_beg, l_pot_end)
 matplotlib.rcParams.update({'font.size': 22})
 fig = matplotlib.pyplot.gcf()
-plt.savefig("figures/Fig3(b).pdf")
+fig.set_size_inches(10,7)
+
+plt.savefig("figures/Fig3(b).tiff", bbox_inches = 'tight')
 #fig.set_size_inches(32,7)
 
 
 # ## S2 Table
 
-# In[180]:
+# In[126]:
 
 l_cross_over = 12
 h_cross_over = 10
