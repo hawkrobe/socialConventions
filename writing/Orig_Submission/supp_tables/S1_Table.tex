@@ -1,0 +1,38 @@
+
+\documentclass[11pt, oneside]{article}   	% use "amsart" instead of "article" for AMSLaTeX format
+\usepackage{geometry}                		% See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   		% ... or a4paper or a5paper or ... 
+%\geometry{landscape}                		% Activate for rotated page geometry
+%\usepackage[parfill]{parskip}    		% Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}				% Use pdf, png, jpg, or eps§ with pdflatex; use eps in DVI mode
+\usepackage{multirow}
+\pagenumbering{gobble}% Remove page numbers (and reset to 1)
+
+						% TeX will automatically convert eps --> pdf in pdflatex		
+\usepackage{amssymb}
+
+%SetFonts
+
+%SetFonts
+
+\begin{document}
+\begin{table}[t]
+\renewcommand{\arraystretch}{1.5}
+\centering
+\begin{tabular}[c]{| p{1cm} | l | c | c | c| }
+\hline
+\multicolumn{2}{|c|}{Condition}& \textrm{\# included} & \textrm{\# uncompleted} & \textrm{\# not paying attention }\\
+\hline
+\multirow{2}{*}{High} & Dynamic & 69 & 16 & 8 \\
+				& Ballistic & 56 & 9 & -- \\
+				\hline
+\multirow{2}{*}{Low} & Dynamic & 46 & 14 & 4 \\
+				& Ballistic & 52 & 10 & -- \\
+				\hline
+\end{tabular}
+
+\label{tab:participants}
+\end{table}
+
+
+\end{document}  
