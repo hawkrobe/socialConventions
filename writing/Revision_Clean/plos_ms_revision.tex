@@ -159,7 +159,7 @@
 % Please capitalize all terms in the title except conjunctions, prepositions, and articles.
 \begin{flushleft}
 {\Large
-\textbf\newline{ASDF formation of social conventions in real-time environments}
+\textbf\newline{The formation of social conventions in real-time environments}
 }
 \newline
 % Insert author names, affiliations and corresponding author email (do not include titles, positions, or degrees).
@@ -249,7 +249,7 @@ Participants were assigned to one of four conditions in a $2\times 2$ experiment
 
 For the `dynamic' condition, players were placed at opposite ends of the virtual world (approximately 120 pixels from both targets at the top and bottom), as shown in Fig. \ref{ex}. The display gave the instruction ``Click where you want to go,'' along with information on the amount of money earned so far, the number of games remaining, and the current speeds of both players, which were held constant in this experiment. One target was always assigned the value of \$0.01 and the other target always assigned \$0.02 (`low' condition) or \$0.04 (`high' condition), but which values appeared at the top and bottom were randomly selected at the beginning of each round. Players were given a 3 second countdown during which they had the option of secretly registering an initial destination. Once the countdown was completed, players started moving toward their destination, with full freedom to change that destination at any time. Changes in angle were immediately registered and updated in real-time within both players' displays, but movement took place in small increments of 10 pixels every 0.67 seconds. This interface was chosen in order to minimize any effects due to lag or unequal proficiencies in using movement controls, as may be found when using arrow keys or an on-screen slider to move continuously. 
 
-For the `ballistic' condition, all settings were the same, except for the initial stage. Instead of a countdown, players were first asked to click on one of the two targets, with the other player's choice hidden from them. Once both players made a valid selection of one target, no more input was registered and the avatars began moving toward the selected destination at the same rate as the dynamic condition, but without being able to change their courses. Clicks in the vicinity of a target were auto-corrected to the center of the target so that players did not accidentally miss the target. In order to bring total payoffs closer together across the `low' and `high' conditions, players in the `low' condition played 60 rounds, while players in the `high' condition only played 50 rounds. All other settings were held constant across this manipulation. 
+For the `ballistic' condition, all settings were the same, except for the initial stage. Instead of a countdown, players were first asked to click on one of the two targets, with the other player's choice hidden from them. Once both players made a valid selection of one target, no more input was registered and the avatars began moving toward the selected destination at the same rate as the dynamic condition, but without being able to change their courses. Clicks in the vicinity of a target were auto-corrected to the center of the target so that players did not accidentally miss the target. In order to bring total payoffs closer together across all `low' and `high' conditions, players in the `low' condition played 60 rounds, while players in the `high' condition only played 50 rounds. All other settings were held constant across the stakes manipulation. 
 
 The rules governing assignment of payoffs were as follows: around each target (represented by a solid white circle), there was a visible, thin outer ring. If a player reached the inner target while any pixel of the other player's avatar was inside this outer ring, it was counted as a tie and the round ended without awarding either player a payoff. If a player reached the inner target while the other player's avatar was \emph{not} within the ring, they were awarded the amount of money associated with the target, movement stopped, the round ended, and the other player was automatically awarded the amount associated with the other target, regardless of their location. This mechanism prevented a single player from trying to get both payoffs. The players were notified of the amount they earned via a message in the center of the screen saying ``You earned 4\textcent [2\textcent]'' At each step within a round, data on the player's locations, angles, current earnings, and payoff assignments was written to the file. Example play for the ballistic and dynamic conditions are shown in \nameref{S1_Video} and \nameref{S2_Video}, respectively. The data and code used in the following analysis are available online\footnote{\texttt{https://github.com/hawkrobe/socialConventions}}.
 
@@ -277,7 +277,7 @@ Turning to fairness, a Kruskal-Wallis $H$-test showed a significant difference i
 
 The third property in Binmore's `social contract theory' is \emph{stability}, capturing the regularity of outcomes over multiple games, or more formally, the convergence of strategies to a point attractor. Unlike efficiency and fairness, which are summaries aggregated over all rounds, stability concerns the dynamic patterns of actions from one round to the next, thereby giving insight into how the overall efficiency and fairness was achieved. Intuitively, a strategy is stable if both players' behavior is predictable and persistent. Knowing the outcome of a social interaction at one point in time should reduce one's uncertainty about what will happen at other points in time. We capture this in a graded, quantitative measure using the information-theoretic measure of \emph{surprisal}, which Shannon \cite{Shannon48} defined as the negative logarithm of the probability of an event. In particular, we compute the average surprisal of a Markov Chain encoding the transition probabilities between events on successive rounds. An unlikely event will have low probability and an observer would therefore be highly surprised to see it happen, given knowledge of other events.  This formulation is related to the model of Markov fictitious play introduced by Vanderschraaf and Skryms \cite{VanderschraafSkyrms03_LearningToTakeTurns}, though we only use it as a measure for data analysis rather than a cognitive model of how agents are reasoning about one another within the game (see \nameref{S2_Text} for technical details of the measure). 
 
-The apparent stability of a pattern of events depends upon the encoding used to define events. An obvious choice in our experiment is the outcome -- who, if anyone, received the high payoff on round $t$. This can accurately capture \emph{turn-taking} equilibria, but makes dyads who follow the \emph{correlated} equilibrium appear highly random (though still efficient and fair). Thus, we also use a direction encoding that records whether a given player went to the top or bottom target. This encoding capture correlated equilibria, but makes turn-taking equilibria appear highly random. Thus, to be charitable, we computed stability under both encodings and recorded the more stable of the two, biasing all conditions equally toward higher stability. Note that stability is optimized in pairs that perfectly follow one of the two conventions\footnote{Both conventions are point attractors in strategy space, as any divergence from the established conventions would lead to failures of coordination.}, and the measure gradually diverges from optimality when either (1) a convention takes longer for a pair to establish or (2) players attempt to depart from an established convention, creating `hiccups' in the coded string (e.g. ABABAABA).
+The apparent stability of a pattern of events depends upon the encoding used to define events. An obvious choice in our experiment is the outcome -- who, if anyone, received the high payoff on round $t$. This can accurately capture \emph{turn-taking} equilibria, but makes dyads who follow the \emph{correlated} equilibrium appear highly random (though still efficient and fair). Thus, we also use a direction encoding that records whether a given player went to the top or bottom target. This encoding capture correlated equilibria, but makes turn-taking equilibria appear highly random. To be charitable, we computed stability under both encodings and recorded the more stable of the two, biasing all conditions equally toward higher stability. Note that stability is optimized in pairs that perfectly follow one of the two conventions\footnote{Both conventions are point attractors in strategy space, as any divergence from the established conventions would lead to failures of coordination.}, and the measure gradually diverges from optimality when either (1) a convention takes longer for a pair to establish or (2) players attempt to depart from an established convention, creating `hiccups' in the coded string (e.g. ABABAABA).
 
 First, it is interesting to note that dyads in the ballistic condition have a higher prevalence of adopting a correlated equilibrium convention than those in the dynamic condition, $\chi^2(4) = 17.18, p = 0.002$ (see \nameref{S3_Text} for further details of this analysis). Second, plotting the surprisal distribution, we observe that the high-discrepancy, dynamic condition has strictly higher surprisal values than the ballistic conditions and the low-discrepancy, dynamic condition has strictly lower surprisal values  (see \nameref{S4_Fig}). We formally checked this observation using a Kruskal-Wallis test, which showed that there are differences between the groups ($H(3) = 98.62, p < .0001$). Post-hoc Mann-Whitney tests at the Bonferroni corrected level of .0125 demonstrated that within the `low' condition, the dynamic condition ($M = 0.71$) is significantly less stable than the ballistic condition ($M=0.61$; $p < .0001$) and within the `high' condition, the dynamic condition ($M=0.56$) is significantly more stable than the ballistic condition ($M=0.62$; $p < .0001$). The two dynamic conditions were significantly different from one another ($p < .0001$), but there was no significant difference between the two ballistic conditions ($p = .06$). This interaction, using surprisal as the y axis, is depicted in Fig. \ref{Fig2}c. Note that lower surprisal implies higher stability.
 
@@ -307,7 +307,7 @@ In biological evolution, genetic assimilation occurs when a phenotypic character
 
 A fruitful analogy can be drawn between genetic change across generations and the formation of conventions across rounds of  our task, and also between the development of a single organism and the dynamics within a single round of Battle of Exes.  Similar to the genetic assimilation over generations of characteristics acquired within the lifetime of an organism, conventions arise from within-round dyadic interactions over rounds of game play.  The end result in both cases is that the longer temporal scale of accommodation (e.g. genetic change and dyadic convention formation) depends for its existence on the shorter temporal scale of accommodation (e.g. individual development and within-trial dynamics), but once acquired, this longer-term accommodation eliminates some of the need for the shorter temporal scale accommodation.  
 
-In our task, after many rounds of interaction,  dyads interacting in real-time are typically well coordinated without the any further need for inefficient within-trial dynamic interactions, particularly when the high discrepancy between payoffs places a premium on finding a coordinated solution. The greater efficiency, fairness, and stability of the (high discrepancy) dynamic condition compared to the ballistic condition indicate that the real-time dynamics within a round was instrumental for achieving these coordinating conventions across rounds.
+In our task, after many rounds of interaction,  dyads interacting in real-time are typically well coordinated without any further need for inefficient within-trial dynamic interactions, particularly when the high discrepancy between payoffs places a premium on finding a coordinated solution. The greater efficiency, fairness, and stability of the (high discrepancy) dynamic condition compared to the ballistic condition indicate that the real-time dynamics within a round was instrumental for achieving these coordinating conventions across rounds.
 
 A second interaction across temporal scales observed in biology is ``canalization,'' which refers to the robustness of a population's phenotype with respect to changes in its environment and genotype \cite{Waddington42_Canalization}. The ability of organisms to learn or develop within a lifetime widens the basin of attraction surrounding an important trait, allowing a much broader range of genetic starting points to access it \cite{ HintonNowlan87_LearningGuidesEvolution}. If there is an efficient, reliable mechanism for some trait to form during an agent's development, there is diminished pressure to encode it in the genome.
 
@@ -383,6 +383,7 @@ This work was supported in part by a National Science Foundation Graduate Resear
 
 \nolinenumbers
 
+
 %\section*{References}
 % Either type in your references using
 % \begin{thebibliography}{}
@@ -397,167 +398,201 @@ This work was supported in part by a National Science Foundation Graduate Resear
 % here.
 % 
 
-%\begin{thebibliography}{10}
-%
-%\bibitem{Lewis08_Convention}
-%Lewis D.
-%\newblock Convention: A philosophical study.
-%\newblock John Wiley \& Sons; 2008.
-%
-%\bibitem{HelbingBuznaWerner05_PedestrianCrowdDynamics}
-%Helbing D, Buzna L, Johansson A, Werner T.
-%\newblock Self-organized pedestrian crowd dynamics: Experiments, simulations,
-%  and design solutions.
-%\newblock Transportation science. 2005;39(1):1--24.
-%
-%\bibitem{VonNeumannMorgenstern07_TheoryOfGames}
-%Von~Neumann J, Morgenstern O.
-%\newblock Theory of Games and Economic Behavior.
-%\newblock Princeton University Press; 1944.
-%
-%\bibitem{Kreps90}
-%Kreps DM.
-%\newblock Game theory and economic modelling.
-%\newblock Clarendon lectures in economics. Clarendon Press; 1990.
-%
-%\bibitem{Rasmusen06}
-%Rasmusen E.
-%\newblock Games and Information: An Introduction to Game Theory.
-%\newblock 4th ed. Wiley-Blackwell; 2006.
-%
-%\bibitem{OpreaCharnessFriedman14_ContinuousTime}
-%Oprea R, Charness G, Friedman D.
-%\newblock Continuous Time and Communication in a Public-goods Experiment.
-%\newblock Journal of Economic Behavior \& Organization. 2014;108:212--223.
-%
-%\bibitem{FriedmanOprea12_ContinuousDilemma}
-%Friedman D, Oprea R.
-%\newblock A continuous dilemma.
-%\newblock The American Economic Review. 2012;102(1):337--363.
-%
-%\bibitem{vanDoornRiebliTaborsky14_CoactionReciprocityContinuousTime}
-%van Doorn GS, Riebli T, Taborsky M.
-%\newblock Coaction versus reciprocity in continuous-time models of cooperation.
-%\newblock Journal of theoretical biology. 2014;356:1--10.
-%
-%\bibitem{JacksonXing14_CultureDependentStrategies}
-%Jackson MO, Xing Y.
-%\newblock Culture-dependent strategies in coordination games.
-%\newblock Proceedings of the National Academy of Sciences. 2014;111(Supplement
-%  3):10889--10896.
-%
-%\bibitem{FreyGoldstone13_CyclicGameDynamics}
-%Frey S, Goldstone RL.
-%\newblock Cyclic game dynamics driven by iterated reasoning.
-%\newblock PloS one. 2013;8(2):e56416.
-%
-%\bibitem{GarrodAnderson87_SayingWhatYouMean}
-%Garrod S, Anderson A.
-%\newblock Saying what you mean in dialogue: A study in conceptual and semantic
-%  co-ordination.
-%\newblock Cognition. 1987;27(2):181--218.
-%
-%\bibitem{BrennanClark96_ConceptualPactsConversation}
-%Brennan SE, Clark HH.
-%\newblock Conceptual pacts and lexical choice in conversation.
-%\newblock Journal of Experimental Psychology: Learning, Memory, and Cognition.
-%  1996;22(6):1482.
-%
-%\bibitem{Binmore05_NaturalJustice}
-%Binmore K.
-%\newblock Natural justice.
-%\newblock Oxford University Press; 2005.
-%
-%\bibitem{VanderschraafSkyrms03_LearningToTakeTurns}
-%Vanderschraaf P, Skyrms B.
-%\newblock Learning to take turns.
-%\newblock Erkenntnis. 2003;59(3):311--347.
-%
-%\bibitem{HelbingSchonhofStark05_EmpiricalTurnTaking}
-%Helbing D, Sch{\"o}nhof M, Stark HU, Ho{\l}yst JA.
-%\newblock How individuals learn to take turns: Emergence of alternating
-%  cooperation in a congestion game and the prisoner's dilemma.
-%\newblock Advances in Complex Systems. 2005;8(01):87--116.
-%
-%\bibitem{LauMui08_TurnTakingBattleOfTheSexes}
-%Lau SHP, Mui VL.
-%\newblock Using turn taking to mitigate coordination and conflict problems in
-%  the repeated battle of the sexes game.
-%\newblock Theory and Decision. 2008;65(2):153--183.
-%
-%\bibitem{Aumann74_CorrelativeEquilibria}
-%Aumann RJ.
-%\newblock Subjectivity and correlation in randomized strategies.
-%\newblock Journal of mathematical Economics. 1974;1(1):67--96.
-%
-%\bibitem{GintisHelbing13_HomoSocialis}
-%Gintis H, Helbing D.
-%\newblock Homo socialis: An analytical core for sociological theory.
-%\newblock Available at SSRN 2362262. 2013;.
-%
-%\bibitem{Hawkins14_RealTimeWebExperiments}
-%Hawkins RXD.
-%\newblock Conducting real-time multiplayer experiments on the web.
-%\newblock Behavior research methods. 2014;p. DOI 10.3758/s13428--014--0515--6.
-%
-%\bibitem{Shannon48}
-%Shannon CE.
-%\newblock A mathematical theory of communication.
-%\newblock Bell system technical journal. 1948;27.
-%
-%\bibitem{Waddington56_BithoraxPhenotype}
-%Waddington CH.
-%\newblock Genetic assimilation of the bithorax phenotype.
-%\newblock Evolution. 1956;p. 1--13.
-%
-%\bibitem{Waddington42_Canalization}
-%Waddington CH.
-%\newblock Canalization of Development and the Inheritance of Acquired
-%  Characters.
-%\newblock Nature. 1942 Nov;150:563--565.
-%
-%\bibitem{HintonNowlan87_LearningGuidesEvolution}
-%Hinton GE, Nowlan SJ.
-%\newblock How learning can guide evolution.
-%\newblock Complex systems. 1987;1(3):495--502.
-%
-%\bibitem{Grice75_LogicConversation}
-%Grice HP.
-%\newblock Logic and conversation.
-%\newblock In: Cole P, Morgan J, editors. Syntax and Semantics. New York:
-%  Academic Press; 1975. p. 43--58.
-%
-%\bibitem{GarrodDoherty94_GroupConventionsLinguistics}
-%Garrod S, Doherty G.
-%\newblock Conversation, co-ordination and convention: An empirical
-%  investigation of how groups establish linguistic conventions.
-%\newblock Cognition. 1994;53(3):181--215.
-%
-%\bibitem{Bicchieri05_DynamicsSocialNorms}
-%Bicchieri C.
-%\newblock The grammar of society: The nature and dynamics of social norms.
-%\newblock Cambridge University Press; 2005.
-%
-%\bibitem{SpiveyDale06}
-%Spivey MJ, Dale R.
-%\newblock Continuous dynamics in real-time cognition.
-%\newblock Current Directions in Psychological Science. 2006;15(5):207--211.
-%
-%\bibitem{KoopJohnson11}
-%Koop GJ, Johnson JG.
-%\newblock Response dynamics: A new window on the decision process.
-%\newblock Judgment and Decision Making. 2011;6(8):750--758.
-%
-%\bibitem{Beer00}
-%Beer RD.
-%\newblock Dynamical approaches to cognitive science.
-%\newblock Trends in cognitive sciences. 2000;4(3):91--99.
-%
-%\end{thebibliography}
+\begin{thebibliography}{10}
 
+\bibitem{ClarkWilkesGibbs86_ReferringCollaborative}
+Clark HH, Wilkes-Gibbs D.
+\newblock Referring as a collaborative process.
+\newblock Cognition. 1986;22(1):1--39.
 
-\bibliography{plos}
-\bibliographystyle{plos2015}
+\bibitem{GarrodAnderson87_SayingWhatYouMean}
+Garrod S, Anderson A.
+\newblock Saying what you mean in dialogue: A study in conceptual and semantic
+  co-ordination.
+\newblock Cognition. 1987;27(2):181--218.
+
+\bibitem{CaldwellSmith12_Conventions}
+Caldwell CA, Smith K.
+\newblock Cultural evolution and perpetuation of arbitrary communicative
+  conventions in experimental microsocieties.
+\newblock PloS one. 2012;7(8):e43807.
+
+\bibitem{CentolaBaronchelli15_ConventionEmergence}
+Centola D, Baronchelli A.
+\newblock The spontaneous emergence of conventions: An experimental study of
+  cultural evolution.
+\newblock Proceedings of the National Academy of Sciences.
+  2015;112(7):1989--1994.
+
+\bibitem{Lewis69_Convention}
+Lewis D.
+\newblock Convention: A philosophical study.
+\newblock Harvard University Press; 1969.
+
+\bibitem{HelbingBuznaWerner05_PedestrianCrowdDynamics}
+Helbing D, Buzna L, Johansson A, Werner T.
+\newblock Self-organized pedestrian crowd dynamics: Experiments, simulations,
+  and design solutions.
+\newblock Transportation science. 2005;39(1):1--24.
+
+\bibitem{VanderschraafSkyrms03_LearningToTakeTurns}
+Vanderschraaf P, Skyrms B.
+\newblock Learning to take turns.
+\newblock Erkenntnis. 2003;59(3):311--347.
+
+\bibitem{HelbingSchonhofStark05_EmpiricalTurnTaking}
+Helbing D, Sch{\"o}nhof M, Stark HU, Ho{\l}yst JA.
+\newblock How individuals learn to take turns: Emergence of alternating
+  cooperation in a congestion game and the prisoner's dilemma.
+\newblock Advances in Complex Systems. 2005;8(01):87--116.
+
+\bibitem{LauMui08_TurnTakingBattleOfTheSexes}
+Lau SHP, Mui VL.
+\newblock Using turn taking to mitigate coordination and conflict problems in
+  the repeated battle of the sexes game.
+\newblock Theory and Decision. 2008;65(2):153--183.
+
+\bibitem{Aumann74_CorrelativeEquilibria}
+Aumann RJ.
+\newblock Subjectivity and correlation in randomized strategies.
+\newblock Journal of mathematical Economics. 1974;1(1):67--96.
+
+\bibitem{GintisHelbing13_HomoSocialis}
+Gintis H, Helbing D.
+\newblock Homo socialis: An analytical core for sociological theory.
+\newblock Available at SSRN 2362262. 2013;.
+
+\bibitem{VonNeumannMorgenstern07_TheoryOfGames}
+Von~Neumann J, Morgenstern O.
+\newblock Theory of Games and Economic Behavior.
+\newblock Princeton University Press; 1944.
+
+\bibitem{Kreps90}
+Kreps DM.
+\newblock Game theory and economic modelling.
+\newblock Clarendon lectures in economics. Clarendon Press; 1990.
+
+\bibitem{Rasmusen06}
+Rasmusen E.
+\newblock Games and Information: An Introduction to Game Theory.
+\newblock 4th ed. Wiley-Blackwell; 2006.
+
+\bibitem{OpreaCharnessFriedman14_ContinuousTime}
+Oprea R, Charness G, Friedman D.
+\newblock Continuous Time and Communication in a Public-goods Experiment.
+\newblock Journal of Economic Behavior \& Organization. 2014;108:212--223.
+
+\bibitem{FriedmanOprea12_ContinuousDilemma}
+Friedman D, Oprea R.
+\newblock A continuous dilemma.
+\newblock The American Economic Review. 2012;102(1):337--363.
+
+\bibitem{vanDoornRiebliTaborsky14_CoactionReciprocityContinuousTime}
+van Doorn GS, Riebli T, Taborsky M.
+\newblock Coaction versus reciprocity in continuous-time models of cooperation.
+\newblock Journal of theoretical biology. 2014;356:1--10.
+
+\bibitem{JacksonXing14_CultureDependentStrategies}
+Jackson MO, Xing Y.
+\newblock Culture-dependent strategies in coordination games.
+\newblock Proceedings of the National Academy of Sciences. 2014;111(Supplement
+  3):10889--10896.
+
+\bibitem{FreyGoldstone13_CyclicGameDynamics}
+Frey S, Goldstone RL.
+\newblock Cyclic game dynamics driven by iterated reasoning.
+\newblock PloS one. 2013;8(2):e56416.
+
+\bibitem{BrennanClark96_ConceptualPactsConversation}
+Brennan SE, Clark HH.
+\newblock Conceptual pacts and lexical choice in conversation.
+\newblock Journal of Experimental Psychology: Learning, Memory, and Cognition.
+  1996;22(6):1482.
+
+\bibitem{Binmore05_NaturalJustice}
+Binmore K.
+\newblock Natural justice.
+\newblock Oxford University Press; 2005.
+
+\bibitem{Hawkins15_RealTimeWebExperiments}
+Hawkins RXD.
+\newblock Conducting real-time multiplayer experiments on the web.
+\newblock Behavior Research Methods. 2015;47(4):966--976.
+
+\bibitem{Shannon48}
+Shannon CE.
+\newblock A mathematical theory of communication.
+\newblock Bell system technical journal. 1948;27.
+
+\bibitem{Waddington56_BithoraxPhenotype}
+Waddington CH.
+\newblock Genetic assimilation of the bithorax phenotype.
+\newblock Evolution. 1956;p. 1--13.
+
+\bibitem{Waddington42_Canalization}
+Waddington CH.
+\newblock Canalization of Development and the Inheritance of Acquired
+  Characters.
+\newblock Nature. 1942 Nov;150:563--565.
+
+\bibitem{HintonNowlan87_LearningGuidesEvolution}
+Hinton GE, Nowlan SJ.
+\newblock How learning can guide evolution.
+\newblock Complex systems. 1987;1(3):495--502.
+
+\bibitem{OpreaHenwoodFriedman11_HawksDoves}
+Oprea R, Henwood K, Friedman D.
+\newblock Separating the Hawks from the Doves: Evidence from continuous time
+  laboratory games.
+\newblock Journal of Economic Theory. 2011;146(6):2206--2225.
+
+\bibitem{GarrodDoherty94_GroupConventionsLinguistics}
+Garrod S, Doherty G.
+\newblock Conversation, co-ordination and convention: An empirical
+  investigation of how groups establish linguistic conventions.
+\newblock Cognition. 1994;53(3):181--215.
+
+\bibitem{WeberCamerer03_CulturalConflict}
+Weber RA, Camerer CF.
+\newblock Cultural conflict and merger failure: An experimental approach.
+\newblock Management Science. 2003;49(4):400--415.
+
+\bibitem{SchotterSopher03}
+Schotter A, Sopher B.
+\newblock Social learning and coordination conventions in intergenerational
+  games: An experimental study.
+\newblock Journal of Political Economy. 2003;111(3):498--529.
+
+\bibitem{Grice75_LogicConversation}
+Grice HP.
+\newblock Logic and conversation.
+\newblock In: Cole P, Morgan J, editors. Syntax and Semantics. New York:
+  Academic Press; 1975. p. 43--58.
+
+\bibitem{Bicchieri05_DynamicsSocialNorms}
+Bicchieri C.
+\newblock The grammar of society: The nature and dynamics of social norms.
+\newblock Cambridge University Press; 2005.
+
+\bibitem{SpiveyDale06}
+Spivey MJ, Dale R.
+\newblock Continuous dynamics in real-time cognition.
+\newblock Current Directions in Psychological Science. 2006;15(5):207--211.
+
+\bibitem{KoopJohnson11}
+Koop GJ, Johnson JG.
+\newblock Response dynamics: A new window on the decision process.
+\newblock Judgment and Decision Making. 2011;6(8):750--758.
+
+\bibitem{Beer00}
+Beer RD.
+\newblock Dynamical approaches to cognitive science.
+\newblock Trends in cognitive sciences. 2000;4(3):91--99.
+
+\end{thebibliography}
+
+%% \bibliography{plos}
+%% \bibliographystyle{plos2015}
 
 
 \end{document}
